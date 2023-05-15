@@ -31,7 +31,7 @@ const employeePrompt = () => {
             'update an employee role'
        ]
     .then((answers) => 
-    const {choices} = answers;
+    const choices = answers;
 
     if (choices === 'view all departments'){
         viewAllDepartments();
@@ -53,4 +53,4 @@ const employeePrompt = () => {
     }
     )
     })
-}
+};
