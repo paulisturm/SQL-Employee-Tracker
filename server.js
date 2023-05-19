@@ -1,7 +1,11 @@
-const express = require(express);
+const express = require('express');
 const mysql = require('mysql2');
 const port = process.env.PORT || 3001;
-const app = require(express);
+const inquirer = require('inquirer');
+const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const db = mysql.createConnection(
     {
@@ -30,27 +34,55 @@ const employeePrompt = () => {
             'add an employee',
             'update an employee role'
        ]
-    .then((answers) => 
+    .then((answers) => {
     const choices = answers;
 
     if (choices === 'view all departments'){
-        viewAllDepartments();
+        db.query('SELECT * FROM department', (err, result) => {if (err) throw err;
+            console.table(result);
+        employeePrompt();
+    });
     }
     if (choices === 'view all roles'){
-        viewAllRoles();
+        db.query('SELECT * FROM roles', (err, result) => {if (err) throw err;
+            console.table(result);
+        employeePrompt();
+    });
     }
     if (choices === 'view all employees'){
-        viewAllEmployees();
+        db.query('SELECT * FROM employees', (err, result) => {if (err) throw err;
+            console.table(result);
+        employeePrompt();
+    });
     }
     if (choices === 'add a role'){
-        addARole();
+        inquirer
+        .prompt({
+            name: 'role',
+            type: 'input',
+            message: 'Enter name of new role'
+        })
     }
     if (choices === 'add an employee'){
-        addAnEmployee();
+        inquirer
+        .prompt({
+            name: 'employee',
+            type: 'input',
+            message: 'Enter name of new employee'
+        })
     }
-    if (choices === 'update an employee role'){
-        updateRole();
-    }
-    )
+    // if (choices === 'update an employee role'){
+    //     db.query('SELECT * FROM department', (err, result) => {if (err) throw err;
+    //         console.table(result);
+    //     employeePrompt();
+    // });
+    // }
+})
     })
+    
 };
+
+
+// app.listen(port, () =>
+//   console.log(`App listening at http://localhost:${port} 🚀`)
+// );
