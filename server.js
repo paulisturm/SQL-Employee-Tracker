@@ -19,7 +19,7 @@ const db = mysql.createConnection(
     console.log(`Connected to the employee database.`)
   );
 
-const employeePrompt = () => {
+
     inquirer
     .prompt ({
        name: 'search',
@@ -34,53 +34,61 @@ const employeePrompt = () => {
             'add an employee',
             'update an employee role'
        ]
-    .then((answers) => {
-    const choices = answers;
+    }).then((answers) => {
+    const {search} = answers;
 
-    if (choices === 'view all departments'){
+    if (search === 'view all departments'){
         db.query('SELECT * FROM department', (err, result) => {if (err) throw err;
             console.table(result);
-        employeePrompt();
     });
     }
-    if (choices === 'view all roles'){
+    if (search === 'view all roles'){
         db.query('SELECT * FROM roles', (err, result) => {if (err) throw err;
             console.table(result);
-        employeePrompt();
     });
     }
-    if (choices === 'view all employees'){
+    if (search === 'view all employees'){
         db.query('SELECT * FROM employees', (err, result) => {if (err) throw err;
             console.table(result);
-        employeePrompt();
     });
     }
-    if (choices === 'add a role'){
+    if (search === 'add a role'){
         inquirer
-        .prompt({
+        .prompt([{
             name: 'role',
             type: 'input',
             message: 'Enter name of new role'
-        })
+        },{
+            name: 'salary',
+            type: 'input',
+            message: 'Enter salary'
+        },{
+            name: 'department',
+            type: 'input',
+            message: 'Enter department id'
+        }])
+        .then(({role,salary,department}) => {
+            db.query('INSERT INTO Role (title, salary, department_id)'), (err, result) => {if (err) throw err;
+                console.table(result);
+    }})
+         
     }
-    if (choices === 'add an employee'){
+    if (search === 'add an employee'){
         inquirer
         .prompt({
             name: 'employee',
             type: 'input',
             message: 'Enter name of new employee'
         })
+        .then()
     }
-    // if (choices === 'update an employee role'){
+    // if (search === 'update an employee role'){
     //     db.query('SELECT * FROM department', (err, result) => {if (err) throw err;
     //         console.table(result);
     //     employeePrompt();
     // });
     // }
-})
-    })
-    
-};
+});
 
 
 // app.listen(port, () =>
