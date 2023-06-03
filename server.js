@@ -43,19 +43,19 @@ const db = mysql.createConnection(
     });
     }
     if (search === 'view all roles'){
-        db.query('SELECT * FROM roles', (err, result) => {if (err) throw err;
+        db.query('SELECT * FROM role', (err, result) => {if (err) throw err;
             console.table(result);
     });
     }
     if (search === 'view all employees'){
-        db.query('SELECT * FROM employees', (err, result) => {if (err) throw err;
+        db.query('SELECT * FROM employee', (err, result) => {if (err) throw err;
             console.table(result);
     });
     }
     if (search === 'add a role'){
         inquirer
         .prompt([{
-            name: 'role',
+            name: 'title',
             type: 'input',
             message: 'Enter name of new role'
         },{
@@ -63,24 +63,50 @@ const db = mysql.createConnection(
             type: 'input',
             message: 'Enter salary'
         },{
-            name: 'department',
+            name: 'department_id',
             type: 'input',
             message: 'Enter department id'
         }])
-        .then(({role,salary,department}) => {
-            db.query('INSERT INTO Role (title, salary, department_id)'), (err, result) => {if (err) throw err;
-                console.table(result);
-    }})
+        .then((result) => {
+            db.promise().query('INSERT INTO role SET ?',result)
+            .then(result => {
+                // console.log(result);
+                //displayRoles();
+                done();
+            })
+            console.log(`${result.title} has been succesfully added to the database`)
+})
          
     }
     if (search === 'add an employee'){
         inquirer
-        .prompt({
-            name: 'employee',
+        .prompt([{
+            name: 'first_name',
             type: 'input',
-            message: 'Enter name of new employee'
-        })
-        .then()
+            message: 'Enter first name of new employee'
+        },{
+            name: 'last_name',
+            type: 'input',
+            message: 'Enter last name of new employee'
+        },{
+            name: 'role_id',
+            type: 'input',
+            message: 'Enter employee role id'
+        },{
+            name: 'manager_id',
+            type: 'input',
+            message: 'Enter employee manager id'
+        }])
+        .then((result) => {
+            db.promise().query('INSERT INTO employee SET ?',result)
+            .then(result => {
+                // console.log(result);
+                //displayRoles();
+                done();
+            })
+            console.log(`${result.first_name} has been succesfully added to the database`)
+})
+         
     }
     // if (search === 'update an employee role'){
     //     db.query('SELECT * FROM department', (err, result) => {if (err) throw err;
@@ -89,6 +115,18 @@ const db = mysql.createConnection(
     // });
     // }
 });
+
+
+// function displayRoles() {
+//     db.query('SELECT * FROM role', (err, result) => {
+//         if (err) throw err;
+//     console.table(result);
+//     })
+// }
+
+function done() {
+    return process.exit();
+}
 
 
 // app.listen(port, () =>
