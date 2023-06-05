@@ -40,16 +40,20 @@ const db = mysql.createConnection(
     if (search === 'view all departments'){
         db.query('SELECT * FROM department', (err, result) => {if (err) throw err;
             console.table(result);
+            done();
+            
     });
     }
     if (search === 'view all roles'){
         db.query('SELECT * FROM role', (err, result) => {if (err) throw err;
             console.table(result);
+            done();
     });
     }
     if (search === 'view all employees'){
         db.query('SELECT * FROM employee', (err, result) => {if (err) throw err;
             console.table(result);
+            done();
     });
     }
     if (search === 'add a role'){
@@ -114,6 +118,25 @@ const db = mysql.createConnection(
     //     employeePrompt();
     // });
     // }
+    if (search === 'add a department'){
+        inquirer
+        .prompt([{
+            name: 'department_name',
+            type: 'input',
+            message: 'Enter name of department'
+        }
+    ])
+        .then((result) => {
+            db.promise().query('INSERT INTO department SET ?',result)
+            .then(result => {
+                // console.log(result);
+                //displayRoles();
+                done();
+            })
+            console.log(`Department has been succesfully added to the database`)
+})
+         
+    }
 });
 
 
